@@ -1,0 +1,60 @@
+#!/usr/bin/python3
+
+from argparse import ArgumentParser
+
+class sym:
+   BLACK = '\033[30m'
+   PURPLE = '\033[95m'
+   CYAN = '\033[96m'
+   DARKCYAN = '\033[36m'
+   BLUE = '\033[94m'
+   DBLUE = '\033[34m'
+   GREEN = '\033[92m'
+   YELLOW = '\033[93m'
+   DMAG = '\033[35m'
+   RED = '\033[91m'
+   BOLD = '\033[1m'
+   UNDERLINE = '\033[4m'
+   END = '\033[0m'
+   INR = '\u20b9'               # rupee symbol
+
+# Default amount invested
+invst = 300000.00
+
+parser = ArgumentParser()
+parser.add_argument("bp", help="Buying price", type=float)
+parser.add_argument("sp", help="Selling price", type=float)
+parser.add_argument("-c", "--cnt", help="Number of shares", type=int)
+parser.add_argument("-a", "--amt", help="Amount invested", type=float)
+args = parser.parse_args()
+
+if args.bp == 0:
+    print("Buying price cannot be 0")
+    exit(1)
+
+if args.amt:
+    invst = args.amt
+    units = args.amt/args.bp
+elif args.cnt:
+    units = args.cnt
+    invst = (args.cnt * args.bp)
+else:
+    units = invst/args.bp
+
+sp    = round(units * args.sp, 2)
+pct   = (args.sp/args.bp) - 1
+ruval = pct * invst
+rdiff = round((args.sp - args.bp), 2)
+
+if sp < invst:
+    colour = sym.RED
+else:
+    colour = sym.GREEN
+cend = sym.END
+
+print ("Invst: "+ sym.BLUE + sym.BOLD + sym.INR + str(invst) + cend)
+print ("SellP: "+ colour + f"{sym.INR}{sp}" + cend)
+print ("Gn/Lo: "+ colour + sym.BOLD + sym.INR + str(round(ruval,2)) + cend +
+       " ["+ colour + sym.INR + str(rdiff) + cend + "; " + colour +
+       str(round(pct*100,2)) + "%" + cend + "]")
+print(f"Units: {round(units, 2)}")

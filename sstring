@@ -1,0 +1,63 @@
+#!/usr/bin/python3
+
+# sstring: print the names of the six strings of a guitar randomly by
+# default.
+
+from argparse import ArgumentParser
+from random import randrange
+from time import sleep
+
+# Defaults
+duration = 4
+random = True
+
+
+parser = ArgumentParser()
+parser.add_argument("-s", "--seq", action="store_true",
+                    help="Print string names sequentially "
+                    "(Default is random)")
+parser.add_argument("-p", "--pairs", action="store_true",
+                    help="Print string names in pairs")
+parser.add_argument("-t", "--time", help="interval in seconds",
+                    type=int)
+parser.add_argument("-b", "--reverse", action="store_true",
+                    help="Print string names backwards")
+args = parser.parse_args()
+
+
+if args.time:
+    duration = args.time
+if args.seq:
+    random = False
+pairs = args.pairs
+
+strings = [ 'E', 'A', 'D', 'G', 'B', 'e' ]
+pairstrings = [ "E\te", "A\tB", "D\tG"]
+
+while True:
+    if random:
+        if pairs:
+            print(pairstrings[randrange(0, 3)])
+        else:
+            print(strings[randrange(0,5)])
+        sleep(duration)
+    else:
+        if args.reverse:
+            if pairs:
+                for i in range(2, -1, -1):
+                    print(pairstrings[i])
+                    sleep(duration)
+            else:
+                for i in range(5, -1, -1):
+                    print(strings[i])
+                    sleep(duration)
+        else:
+            if pairs:
+                for i in range(0, 3):
+                    print(pairstrings[i])
+                    sleep(duration)
+            else:
+                for i in range(0, 5):
+                    print(strings[i])
+                    sleep(duration)
+
