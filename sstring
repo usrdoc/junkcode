@@ -54,7 +54,7 @@ try:
             if pairs:
                 printstr(pairstrings[randrange(0, 3)])
             else:
-                printstr(strings[randrange(0,5)])
+                printstr(strings[randrange(0, 6)])
             sleep(duration)
         else:
             if args.reverse:
