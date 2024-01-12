@@ -14,6 +14,13 @@ random = True
 columns = get_terminal_size().columns
 rows = int((get_terminal_size().lines-6)/2)
 
+# GNOME screen autolock disable
+# Set 0 to disable and 300 for 5 minutes
+# Thanks to:
+# https://askubuntu.com/questions/177348/how-do-i-disable-the-screensaver-lock
+cmd="gsettings set org.gnome.desktop.session idle-delay 0"
+system(cmd)
+
 def printstr(string):
     system("clear")
     print("\n"*rows)
@@ -25,8 +32,8 @@ parser.add_argument("-s", "--seq", action="store_true",
                     "(Default is random)")
 parser.add_argument("-p", "--pairs", action="store_true",
                     help="Print string names in pairs")
-parser.add_argument("-t", "--time", help="interval in seconds",
-                    type=int)
+parser.add_argument("-t", "--time", help="interval in seconds "
+                    "(default: 4s)", type=int)
 parser.add_argument("-b", "--reverse", action="store_true",
                     help="Print string names backwards")
 args = parser.parse_args()
@@ -41,29 +48,33 @@ pairs = args.pairs
 strings = [ 'E', 'A', 'D', 'G', 'B', 'e' ]
 pairstrings = [ "E\te", "A\tB", "D\tG"]
 
-while True:
-    if random:
-        if pairs:
-            printstr(pairstrings[randrange(0, 3)])
-        else:
-            printstr(strings[randrange(0,5)])
-        sleep(duration)
-    else:
-        if args.reverse:
+try:
+    while True:
+        if random:
             if pairs:
-                for i in range(2, -1, -1):
-                    printstr(pairstrings[i])
-                    sleep(duration)
+                printstr(pairstrings[randrange(0, 3)])
             else:
-                for i in range(5, -1, -1):
-                    printstr(strings[i])
-                    sleep(duration)
+                printstr(strings[randrange(0,5)])
+            sleep(duration)
         else:
-            if pairs:
-                for i in range(0, 3):
-                    printstr(pairstrings[i])
-                    sleep(duration)
+            if args.reverse:
+                if pairs:
+                    for i in range(2, -1, -1):
+                        printstr(pairstrings[i])
+                        sleep(duration)
+                else:
+                    for i in range(5, -1, -1):
+                        printstr(strings[i])
+                        sleep(duration)
             else:
-                for i in range(0, 5):
-                    printstr(strings[i])
-                    sleep(duration)
+                if pairs:
+                    for i in range(0, 3):
+                        printstr(pairstrings[i])
+                        sleep(duration)
+                else:
+                    for i in range(0, 6):
+                        printstr(strings[i])
+                        sleep(duration)
+except KeyboardInterrupt:
+    cmd="gsettings set org.gnome.desktop.session idle-delay 300"
+    system(cmd)
