@@ -6,11 +6,17 @@
 from argparse import ArgumentParser
 from random import randrange
 from time import sleep
+from os import system, get_terminal_size
 
 # Defaults
 duration = 4
 random = True
+columns = get_terminal_size().columns
 
+def printstr(string):
+    system("clear")
+    print("\n\n\n\n\n\n\n")
+    print(string.center(columns))
 
 parser = ArgumentParser()
 parser.add_argument("-s", "--seq", action="store_true",
@@ -37,27 +43,26 @@ pairstrings = [ "E\te", "A\tB", "D\tG"]
 while True:
     if random:
         if pairs:
-            print(pairstrings[randrange(0, 3)])
+            printstr(pairstrings[randrange(0, 3)])
         else:
-            print(strings[randrange(0,5)])
+            printstr(strings[randrange(0,5)])
         sleep(duration)
     else:
         if args.reverse:
             if pairs:
                 for i in range(2, -1, -1):
-                    print(pairstrings[i])
+                    printstr(pairstrings[i])
                     sleep(duration)
             else:
                 for i in range(5, -1, -1):
-                    print(strings[i])
+                    printstr(strings[i])
                     sleep(duration)
         else:
             if pairs:
                 for i in range(0, 3):
-                    print(pairstrings[i])
+                    printstr(pairstrings[i])
                     sleep(duration)
             else:
                 for i in range(0, 5):
-                    print(strings[i])
+                    printstr(strings[i])
                     sleep(duration)
-
