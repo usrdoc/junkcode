@@ -12,11 +12,12 @@ from os import system, get_terminal_size
 duration = 4
 random = True
 columns = get_terminal_size().columns
+rows = int((get_terminal_size().lines-6)/2)
 
 def printstr(string):
     system("clear")
-    print("\n\n\n\n\n\n\n")
-    print(string.center(columns))
+    print("\n"*rows)
+    print(string.center(columns), flush=True)
 
 parser = ArgumentParser()
 parser.add_argument("-s", "--seq", action="store_true",
