@@ -1,0 +1,42 @@
+#!/usr/bin/python3
+
+from argparse import ArgumentParser
+from random import randrange
+from time import sleep
+from os import system, get_terminal_size
+
+duration = 60
+template = "%d) Find all %s notes"
+notes = [ "A", "B", "C", "D", "E", "F", "G" ]
+columns = get_terminal_size().columns
+rows = int((get_terminal_size().lines-6)/2)
+
+# GNOME screen autolock disable
+# Set 0 to disable and 300 for 5 minutes
+# Thanks to:
+# https://askubuntu.com/questions/177348/how-do-i-disable-the-screensaver-lock
+cmd="gsettings set org.gnome.desktop.session idle-delay 0"
+system(cmd)
+
+def printstr(string):
+    system("clear")
+    print("\n"*rows)
+    print(string.center(columns), flush=True)
+
+parser = ArgumentParser()
+parser.add_argument("-t", "--time", help="interval in seconds "
+                    "(default: 60s)", type=int)
+args = parser.parse_args()
+
+if args.time:
+    duration = args.time
+
+try:
+    while True:
+        i = randrange(0, len(notes))
+        printstr(template % (i, notes[i]))
+        sleep(duration)
+
+except KeyboardInterrupt:
+    cmd="gsettings set org.gnome.desktop.session idle-delay 300"
+    system(cmd)
