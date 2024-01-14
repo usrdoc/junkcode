@@ -32,6 +32,8 @@ parser.add_argument("-s", "--seq", action="store_true",
                     "(Default is random)")
 parser.add_argument("-p", "--pairs", action="store_true",
                     help="Print string names in pairs")
+parser.add_argument("-l", "--triplets", action="store_true",
+                    help="Print string names in triples")
 parser.add_argument("-t", "--time", help="interval in seconds "
                     "(default: 4s)", type=int)
 parser.add_argument("-b", "--reverse", action="store_true",
@@ -44,15 +46,19 @@ if args.time:
 if args.seq:
     random = False
 pairs = args.pairs
+triplets = args.triplets
 
 strings = [ 'E', 'A', 'D', 'G', 'B', 'e' ]
-pairstrings = [ "E\te", "A\tB", "D\tG"]
+pairstrings = [ "E\te", "A\tB", "D\tG" ]
+triples = [ "E   A   D", "G   B   e" ]
 
 try:
     while True:
         if random:
             if pairs:
                 printstr(pairstrings[randrange(0, 3)])
+            elif triplets:
+                printstr(triples[randrange(0, 2)])
             else:
                 printstr(strings[randrange(0, 6)])
             sleep(duration)
@@ -62,6 +68,10 @@ try:
                     for i in range(2, -1, -1):
                         printstr(pairstrings[i])
                         sleep(duration)
+                elif triplets:
+                    for i in range(1, -1, -1):
+                        printstr(triples[i])
+                        sleep(duration)
                 else:
                     for i in range(5, -1, -1):
                         printstr(strings[i])
@@ -70,6 +80,10 @@ try:
                 if pairs:
                     for i in range(0, 3):
                         printstr(pairstrings[i])
+                        sleep(duration)
+                elif triplets:
+                    for i in range(0, 2):
+                        printstr(triples[i])
                         sleep(duration)
                 else:
                     for i in range(0, 6):
