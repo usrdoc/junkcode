@@ -5,11 +5,13 @@
 
 from argparse import ArgumentParser
 from random import randrange
-from time import sleep
+from time import sleep, time
 from os import system, get_terminal_size
 
 # Defaults
-duration = 4
+interval = 4
+duration = 900                  # Practice time in seconds
+t_secs = 0
 random = True
 columns = get_terminal_size().columns
 rows = int((get_terminal_size().lines-6)/2)
@@ -36,15 +38,22 @@ parser.add_argument("-l", "--triplets", action="store_true",
                     help="Print string names in triples")
 parser.add_argument("-t", "--time", help="interval in seconds "
                     "(default: 4s)", type=int)
+parser.add_argument("-d", "--duration", help="practice duration in seconds "
+                    "(default: 900s)", type=int)
 parser.add_argument("-b", "--reverse", action="store_true",
                     help="Print string names backwards")
 args = parser.parse_args()
 
 
 if args.time:
-    duration = args.time
+    interval = args.time
 if args.seq:
     random = False
+if args.duration:
+    duration = args.duration
+    t_secs = time()
+
+
 pairs = args.pairs
 triplets = args.triplets
 
@@ -54,6 +63,10 @@ triples = [ "E   A   D", "G   B   e" ]
 
 try:
     while True:
+        if args.duration:
+            t_now = time()
+            if t_now - t_secs > duration:
+                raise(KeyboardInterrupt)
         if random:
             if pairs:
                 printstr(pairstrings[randrange(0, 3)])
@@ -61,34 +74,34 @@ try:
                 printstr(triples[randrange(0, 2)])
             else:
                 printstr(strings[randrange(0, 6)])
-            sleep(duration)
+            sleep(interval)
         else:
             if args.reverse:
                 if pairs:
                     for i in range(2, -1, -1):
                         printstr(pairstrings[i])
-                        sleep(duration)
+                        sleep(interval)
                 elif triplets:
                     for i in range(1, -1, -1):
                         printstr(triples[i])
-                        sleep(duration)
+                        sleep(interval)
                 else:
                     for i in range(5, -1, -1):
                         printstr(strings[i])
-                        sleep(duration)
+                        sleep(interval)
             else:
                 if pairs:
                     for i in range(0, 3):
                         printstr(pairstrings[i])
-                        sleep(duration)
+                        sleep(interval)
                 elif triplets:
                     for i in range(0, 2):
                         printstr(triples[i])
-                        sleep(duration)
+                        sleep(interval)
                 else:
                     for i in range(0, 6):
                         printstr(strings[i])
-                        sleep(duration)
+                        sleep(interval)
 except KeyboardInterrupt:
     cmd="gsettings set org.gnome.desktop.session idle-delay 300"
     system(cmd)
