@@ -9,9 +9,7 @@ from time import sleep, time
 from os import system, get_terminal_size
 
 # Defaults
-interval = 4
-duration = 900                  # Practice time in seconds
-t_secs = 0
+t_secs = time()
 random = True
 columns = get_terminal_size().columns
 rows = int((get_terminal_size().lines-6)/2)
@@ -37,9 +35,10 @@ parser.add_argument("-p", "--pairs", action="store_true",
 parser.add_argument("-l", "--triplets", action="store_true",
                     help="Print string names in triples")
 parser.add_argument("-t", "--time", help="interval in seconds "
-                    "(default: 4s)", type=int)
+                    "(default: 4s)", type = int, default = 4)
 parser.add_argument("-d", "--duration", help="practice duration in seconds "
-                    "(default: 900s)", type=int)
+                    "(default: 900s). Set <= 0 to disable", type = int,
+                    default = 900)
 parser.add_argument("-b", "--reverse", action="store_true",
                     help="Print string names backwards")
 args = parser.parse_args()
@@ -49,10 +48,10 @@ if args.time:
     interval = args.time
 if args.seq:
     random = False
-if args.duration:
+if args.duration > 0:
     duration = args.duration
-    t_secs = time()
-
+else:
+    duration = False
 
 pairs = args.pairs
 triplets = args.triplets
@@ -63,10 +62,13 @@ triples = [ "E   A   D", "G   B   e" ]
 
 try:
     while True:
-        if args.duration:
-            t_now = time()
+        # By default practice is 15mins
+        t_now = time()
+
+        if duration:
             if t_now - t_secs > duration:
                 raise(KeyboardInterrupt)
+
         if random:
             if pairs:
                 printstr(pairstrings[randrange(0, 3)])
