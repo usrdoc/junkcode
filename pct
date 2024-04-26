@@ -23,10 +23,20 @@ invst = 300000.00
 
 parser = ArgumentParser()
 parser.add_argument("bp", help="Buying price", type=float)
-parser.add_argument("sp", help="Selling price", type=float)
+parser.add_argument("sp", help="Selling price (If -p is provided then "\
+                    "this argument is ignored)", type=float)
+#parser.add_argument("-s", "--sp", help="Selling price", type=float)
 parser.add_argument("-c", "--cnt", help="Number of shares", type=int)
 parser.add_argument("-a", "--amt", help="Amount invested", type=float)
+parser.add_argument("-p", "--dispct", help="Percent amount", type=float)
+parser.add_argument("-d", "--detail", help="Print all details",
+                    action='store_true')
 args = parser.parse_args()
+
+# The colors/symbols we need
+blu  = sym.BLUE
+bold = sym.BOLD
+ru  = sym.INR
 
 if args.bp == 0:
     print("Buying price cannot be 0")
@@ -41,20 +51,62 @@ elif args.cnt:
 else:
     units = invst/args.bp
 
-sp    = round(units * args.sp, 2)
-pct   = (args.sp/args.bp) - 1
-ruval = pct * invst
-rdiff = round((args.sp - args.bp), 2)
+# Selling price can't be < 0 unless -p is specified
+if args.sp < 0 and not args.dispct:
+   print("Selling price cannot be less than 0")
+   exit(1)
 
-if sp < invst:
-    colour = sym.RED
-else:
-    colour = sym.GREEN
-cend = sym.END
+if args.sp >= 0 and args.dispct:
+   print("The arguments sp and pct are mutually exclusive.")
+   exit(1)
 
-print ("Invst: "+ sym.BLUE + sym.BOLD + sym.INR + str(invst) + cend)
-print ("SellP: "+ colour + f"{sym.INR}{sp}" + cend)
-print ("Gn/Lo: "+ colour + sym.BOLD + sym.INR + str(round(ruval,2)) + cend +
-       " ["+ colour + sym.INR + str(rdiff) + cend + "; " + colour +
-       str(round(pct*100,2)) + "%" + cend + "]")
-print(f"Units: {round(units, 2)}")
+# args.sp can be 0
+if args.sp >= 0:
+   sp = round(units * args.sp, 2)
+
+# if invoked from display_percent, the args.sp will be -1.
+def display_vanilla(sp):
+   total_sp = round(sp * units)
+   pct   = (total_sp/invst) - 1
+   ruval = pct * invst
+   rdiff = round((sp - args.bp), 2)
+   if total_sp < invst:
+      colour = sym.RED
+   else:
+      colour = sym.GREEN
+   cend = sym.END
+
+   print ("Invst: "+ sym.BLUE + sym.BOLD + sym.INR + str(invst) + cend)
+   print ("SellP: "+ colour + f"{sym.INR}{total_sp}" + cend)
+   print ("Gn/Lo: "+ colour + sym.BOLD + sym.INR + str(round(ruval,2)) + cend +
+          " ["+ colour + sym.INR + str(rdiff) + cend + "; " + colour +
+          str(round(pct*100,2)) + "%" + cend + "]")
+   print(f"Units: {round(units, 2)}")
+   exit(0)
+
+def display_percent():
+   perct = args.dispct
+
+   if perct > 0:
+      colour = sym.GREEN
+   else:
+      colour = sym.RED
+
+   sellp = round(args.bp + ((args.bp/100) * perct))
+
+   print ("Buy prc: "+ blu + bold + ru + str(args.bp) + sym.END)
+   print ("Percent: " + colour + bold + f"{ru}{perct}" + sym.END)
+   print ("Sel prc: " + colour + bold + f"{ru}{sellp}" + sym.END)
+
+   if args.detail:
+      print("----------------")
+      display_vanilla(round(sellp, 2))
+   exit(0)
+
+if args.sp >=0:
+   display_vanilla(args.sp)
+
+if args.dispct:
+   display_percent()
+
+
