@@ -37,6 +37,7 @@ args = parser.parse_args()
 blu  = sym.BLUE
 bold = sym.BOLD
 ru  = sym.INR
+cend = sym.END
 
 if args.bp == 0:
     print("Buying price cannot be 0")
@@ -76,12 +77,11 @@ def display_vanilla(sp):
       colour = sym.RED
    else:
       colour = sym.GREEN
-   cend = sym.END
 
-   print ("Invst: "+ sym.BLUE + sym.BOLD + sym.INR + str(invst) + cend)
-   print ("SellP: "+ colour + f"{sym.INR}{total_sp}" + cend)
-   print ("Gn/Lo: "+ colour + sym.BOLD + sym.INR + str(round(ruval,2)) + cend +
-          " ["+ colour + sym.INR + str(rdiff) + cend + "; " + colour +
+   print ("Invst: "+ blu + bold + ru + str(invst) + cend)
+   print ("SellP: "+ colour + bold + f"{ru}{total_sp}" + cend)
+   print ("Gn/Lo: "+ colour + bold + ru + str(round(ruval,2)) + cend +
+          " ["+ colour + ru + str(rdiff) + cend + "; " + colour +
           str(round(pct*100,2)) + "%" + cend + "]")
    print(f"Units: {round(units, 2)}")
    exit(0)
@@ -96,9 +96,9 @@ def display_percent():
 
    sellp = round(args.bp + ((args.bp/100) * perct), 2)
 
-   print ("Buy prc: "+ blu + bold + ru + str(args.bp) + sym.END)
-   print ("Percent: " + colour + bold + f"{ru}{perct}" + sym.END)
-   print ("Sel prc: " + colour + bold + f"{ru}{sellp}" + sym.END)
+   print ("Buy prc: "+ blu + bold + ru + str(args.bp) + cend)
+   print ("Sel prc: " + colour + bold + f"{ru}{sellp}" + cend)
+   print ("Percent: " + colour + bold + f"{perct}%" + cend)
 
    if args.detail:
       print("----------------")
