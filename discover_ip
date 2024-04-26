@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# TODO: Take `prefix' and `interface' as CLI arguments.
+# Make interface and prefix as mandatory arguments(?).
+
+prefix=192.168.1
+localhost=`ifconfig wlp0s20f3|grep -w inet | awk '{print $2}'`
+
+for i in `seq 2 20`
+do
+    nmap -Pn -p 22 ${prefix}.$i | egrep 'open +ssh' 2>&1 >/dev/null \
+        && {
+        if [[ ${prefix}.$i = $localhost ]]; then
+            echo "${prefix}.$i (localhost)"
+        else
+            echo ${prefix}.$i
+        fi }
+done
