@@ -66,6 +66,8 @@ if args.sp >= 0:
 
 # if invoked from display_percent, the args.sp will be -1.
 def display_vanilla(sp):
+   if args.detail and not args.dispct:
+      print("WARN: The option -d is compatible only with -p")
    total_sp = round(sp * units)
    pct   = (total_sp/invst) - 1
    ruval = pct * invst
