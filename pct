@@ -94,7 +94,7 @@ def display_percent():
    else:
       colour = sym.RED
 
-   sellp = round(args.bp + ((args.bp/100) * perct))
+   sellp = round(args.bp + ((args.bp/100) * perct), 2)
 
    print ("Buy prc: "+ blu + bold + ru + str(args.bp) + sym.END)
    print ("Percent: " + colour + bold + f"{ru}{perct}" + sym.END)
