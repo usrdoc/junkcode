@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+usage() {
+    echo "Usage: $0 DURATION<suffix>"
+    echo "suffix can be s/m/h for minutes/hours, if no suffix is \
+provided default is seconds"
+    exit 1
+}
+
+if [ $# -ne 1 ]; then
+    usage
+fi
+
+DURATION=$1
+
+if [ "X$MEDIA" = "X" ]; then
+    MEDIA=~/bin/files/gita.mkv
+fi
+
+if test -f $MEDIA; then
+    echo "Media file: $MEDIA"
+else
+    echo "Media file $MEDIA not found"
+    echo "Set MEDIA variable for the file of your choice"
+    exit 1
+fi
+
+# We use mplayer for now or set the PLAYER variable
+if [ "X$PLAYER" = "X" ]; then
+    if test `which mplayer`; then
+        PLAYER=mplayer
+    else
+        echo "mplayer not found"
+        echo "Install mplayer or set PLAYER"
+        exit 1
+    fi
+fi
+
+if echo $DURATION | egrep "[0-9]+$" > /dev/null; then
+    # If no suffix, default is seconds
+    seconds=$DURATION
+elif echo $DURATION | egrep -i "[0-9]+[sS]$" >/dev/null; then
+    seconds=`echo $DURATION | sed "s/[sS]//g"`
+elif echo $DURATION | egrep -i "[0-9]+[mM]$" >/dev/null; then
+    seconds=`echo "$DURATION * 60" | sed "s/[mM]//g" | bc -q`
+elif echo $DURATION | egrep -i "[0-9]+[hH]$" >/dev/null; then
+    seconds=`echo "$DURATION * 60*60" | sed "s/[hH]//g" | bc -q`
+else
+    usage
+fi
+
+echo "Sleeping ${seconds} seconds..."
+sleep $seconds && $PLAYER $MEDIA
