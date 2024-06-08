@@ -7,8 +7,10 @@ from os import system, get_terminal_size
 
 duration = 60
 template = "%s"
-notes = [ "Af", "A", "A#", "Bf", "B", "C", "C#", "Df", "D", "D#", "Ef",
-          "E", "F", "F#", "Gf", "G", "G#" ]
+
+# Club enharmonic notes together.
+notes = [ "G#/Af", "A", "A#/Bf", "B", "C", "C#/Df", "D", "D#/Ef",
+          "E", "F", "F#/Gf", "G" ]
 columns = get_terminal_size().columns
 rows = int((get_terminal_size().lines-6)/2)
 
