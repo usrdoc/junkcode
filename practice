@@ -7,8 +7,8 @@ from os import system, get_terminal_size
 
 duration = 60
 template = "%s"
-notes = [ "A", "A#", "Af", "Bf", "B", "C", "C#", "Cf", "D", "D#", "Df", "Ef",
-          "E", "F", "F#", "Ff", "G", "G#", "Gf" ]
+notes = [ "Af", "A", "A#", "Bf", "B", "C", "C#", "Df", "D", "D#", "Ef",
+          "E", "F", "F#", "Gf", "G", "G#" ]
 columns = get_terminal_size().columns
 rows = int((get_terminal_size().lines-6)/2)
 
