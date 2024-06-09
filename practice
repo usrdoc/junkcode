@@ -8,9 +8,11 @@ from os import system, get_terminal_size
 duration = 60
 template = "%s"
 
-# Club enharmonic notes together.
-notes = [ "G#/Af", "A", "A#/Bf", "B", "C", "C#/Df", "D", "D#/Ef",
-          "E", "F", "F#/Gf", "G" ]
+
+n_notes   = [ "A", "B", "C", "D", "E", "F", "G" ]
+s_notes   = [ "G#/Af", "A#/Bf", "C#/Df", "D#/Ef", "F#/Gf" ]
+all_notes = n_notes + s_notes
+
 columns = get_terminal_size().columns
 rows = int((get_terminal_size().lines-6)/2)
 
@@ -26,20 +28,36 @@ def printstr(string):
     print("\n"*rows)
     print(string.center(columns), flush=True)
 
+def printnote(notes):
+    try:
+        while True:
+            i = randrange(0, len(notes))
+            printstr(template % (notes[i]))
+            sleep(duration)
+    except KeyboardInterrupt:
+        cmd="gsettings set org.gnome.desktop.session idle-delay 300"
+        system(cmd)
+
 parser = ArgumentParser()
 parser.add_argument("-t", "--time", help="interval in seconds "
                     "(default: 60s)", type=int)
+parser.add_argument("-n", "--natural", help="natural notes only",
+                    action='store_true')
+parser.add_argument("-s", "--sharp", help="sharp and flat notes only",
+                    action='store_true')
+parser.add_argument("-a", "--all", help="all notes (sharps and flats). "
+                    "Default is to print all notes", action='store_true')
 args = parser.parse_args()
 
 if args.time:
     duration = args.time
 
-try:
-    while True:
-        i = randrange(0, len(notes))
-        printstr(template % (notes[i]))
-        sleep(duration)
-
-except KeyboardInterrupt:
-    cmd="gsettings set org.gnome.desktop.session idle-delay 300"
-    system(cmd)
+if args.natural:
+    printnote(n_notes)
+elif args.sharp:
+    printnote(s_notes)
+elif args.all:
+    printnote(all_notes)
+# Default is to play all notes
+else:
+    printnote(all_notes)
