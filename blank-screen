@@ -1,35 +1,45 @@
-#!/usr/bin/python3
+#!/usr/bin/bash
 
-from argparse import ArgumentParser
-from os import system
+# cmd = 'gsettings set org.gnome.desktop.session idle-delay %d'
 
-delay = 300
-cmd = 'gsettings set org.gnome.desktop.session idle-delay %d'
+usage() {
+    echo "Usage: $0 DURATION<suffix>"
+    echo "suffix can be s/m/h for minutes/hours, if no suffix is \
+provided seconds is used by default"
+    exit 1
+}
 
-parser = ArgumentParser()
-parser.add_argument("-s", "--seconds", help="Delay in seconds "
-                    "(0 to disable, default: 300secs)", type=int)
-args = parser.parse_args()
+if [ $# -ne 1 ]; then
+    usage
+fi
 
-if args.seconds is not None:
-    if args.seconds >= 0:
-        delay = args.seconds
-    else:
-        print("The argument should be greater than or equal to 0")
-        exit(2)
+DURATION=$1
 
-if delay < 60:
-    if delay == 0:
-        print("Disabling screen lock...")
-    else:
-        print("Setting screen lock to %d seconds..."% delay)
-else:
-    mins = delay/60
-    secs = delay % 60
-    if secs:
-        print("Setting screen lock to %d mins and %d seconds..."%
-              (mins,secs))
-    else:
-        print("Setting screen lock to %d mins..."%mins)
+if echo $DURATION | egrep "[0-9]+$" > /dev/null; then
+    # If no suffix, default is seconds
+    seconds=$DURATION
+    intervl=$DURATION
+    unit="seconds"
+elif echo $DURATION | egrep -i "[0-9]+[sS]$" >/dev/null; then
+    seconds=`echo $DURATION | sed "s/[sS]//g"`
+    intervl=$seconds
+    unit="seconds"
+elif echo $DURATION | egrep -i "[0-9]+[mM]$" >/dev/null; then
+    intervl=`echo $DURATION | sed "s/[mM]//g"`
+    seconds=`echo "$intervl * 60" | bc -q`
+    unit="minutes"
+elif echo $DURATION | egrep -i "[0-9]+[hH]$" >/dev/null; then
+    intervl=`echo $DURATION | sed "s/[hH]//g"`
+    seconds=`echo "$intervl * 60*60" | bc -q`
+    unit="hours"
+else
+    usage
+fi
 
-system(cmd%delay)
+if [ $intervl = 0 ]; then
+     echo "Disabling screen lock..."
+else
+     echo "Setting screen lock to $intervl $unit..."
+fi
+
+gsettings set org.gnome.desktop.session idle-delay $seconds
