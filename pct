@@ -24,7 +24,7 @@ invst = 300000.00
 parser = ArgumentParser()
 parser.add_argument("bp", help="Buying price", type=float)
 parser.add_argument("sp", help="Selling price (If -p is provided then "\
-                    "this argument is ignored)", type=float)
+                    "this argument is ignored)")
 #parser.add_argument("-s", "--sp", help="Selling price", type=float)
 parser.add_argument("-c", "--cnt", help="Number of shares", type=int)
 parser.add_argument("-a", "--amt", help="Amount invested", type=float)
@@ -52,6 +52,16 @@ elif args.cnt:
 else:
     units = invst/args.bp
 
+try:
+   args.sp = eval(args.sp)
+except SyntaxError:
+   msg = "Syntax error: The value should be int/float or an operator \n\
+              between int/float. For eg 22+33 or 22-11."
+   print(msg)
+   exit(1)
+except ZeroDivisionError:
+   print("ZeroDivisionError: Can't divide by 0")
+   exit(1)
 # Selling price can't be < 0 unless -p is specified
 if args.sp < 0 and not args.dispct:
    print("Selling price cannot be less than 0")
@@ -78,6 +88,9 @@ def display_vanilla(sp):
    else:
       colour = sym.GREEN
 
+   print ("Buy price: " + blu + bold + ru + str(args.bp) +
+          cend + "  " + "Sell Price: " + colour + bold +
+          ru + str(args.sp) + cend)
    print ("Invst: "+ blu + bold + ru + str(invst) + cend)
    print ("SellP: "+ colour + bold + f"{ru}{total_sp}" + cend)
    print ("Gn/Lo: "+ colour + bold + ru + str(round(ruval,2)) + cend +
