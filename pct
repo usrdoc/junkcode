@@ -25,7 +25,6 @@ parser = ArgumentParser()
 parser.add_argument("bp", help="Buying price", type=float)
 parser.add_argument("sp", help="Selling price (If -p is provided then "\
                     "this argument is ignored)")
-#parser.add_argument("-s", "--sp", help="Selling price", type=float)
 parser.add_argument("-c", "--cnt", help="Number of shares", type=int)
 parser.add_argument("-a", "--amt", help="Amount invested", type=float)
 parser.add_argument("-p", "--dispct", help="Percent amount", type=float)
@@ -53,7 +52,8 @@ else:
     units = invst/args.bp
 
 try:
-   args.sp = eval(args.sp)
+   # Strip commas if any
+   args.sp = eval(args.sp.replace(",",""))
 except SyntaxError:
    msg = "Syntax error: The value should be int/float or an operator \n\
               between int/float. For eg 22+33 or 22-11."
