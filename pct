@@ -40,7 +40,7 @@ def validate_and_eval(data):
       exit(1)
 
 parser = ArgumentParser()
-parser.add_argument("bp", help="Buying price", type=float)
+parser.add_argument("bp", help="Buying price")
 parser.add_argument("sp", help="Selling price (If -p is provided then "\
                     "this argument is ignored)")
 parser.add_argument("-c", "--cnt", help="Number of shares")
@@ -55,6 +55,8 @@ blu  = sym.BLUE
 bold = sym.BOLD
 ru  = sym.INR
 cend = sym.END
+
+args.bp = validate_and_eval(args.bp)
 
 if args.bp == 0:
     print("Buying price cannot be 0")
