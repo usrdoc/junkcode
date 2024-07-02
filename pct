@@ -21,12 +21,30 @@ class sym:
 # Default amount invested
 invst = 300000.00
 
+def validate_and_eval(data):
+   try:
+      # Strip commas, if any and evaluate
+      data = eval(data.replace(",", ""))
+      return (data)
+   except SyntaxError:
+      msg = "Syntax error: The value should be int/float or an operator \n\
+              between int/float. For eg 22+33 or 22-11."
+      print(msg)
+      exit(1)
+   except ZeroDivisionError:
+      print("ZeroDivisionError: Can't divide by 0")
+      exit(1)
+   except NameError:
+      # Means, user has entered a character in input
+      print("Invalid input: Only numbers and operators +/-/* allowed")
+      exit(1)
+
 parser = ArgumentParser()
 parser.add_argument("bp", help="Buying price", type=float)
 parser.add_argument("sp", help="Selling price (If -p is provided then "\
                     "this argument is ignored)")
-parser.add_argument("-c", "--cnt", help="Number of shares", type=int)
-parser.add_argument("-a", "--amt", help="Amount invested", type=float)
+parser.add_argument("-c", "--cnt", help="Number of shares")
+parser.add_argument("-a", "--amt", help="Amount invested")
 parser.add_argument("-p", "--dispct", help="Percent amount", type=float)
 parser.add_argument("-d", "--detail", help="Print all details",
                     action='store_true')
@@ -43,25 +61,16 @@ if args.bp == 0:
     exit(1)
 
 if args.amt:
-    invst = args.amt
-    units = args.amt/args.bp
+    invst = validate_and_eval(args.amt)
+    units = invst/args.bp
 elif args.cnt:
-    units = args.cnt
-    invst = (args.cnt * args.bp)
+    units = validate_and_eval(args.cnt)
+    invst = (units * args.bp)
 else:
     units = invst/args.bp
 
-try:
-   # Strip commas if any
-   args.sp = eval(args.sp.replace(",",""))
-except SyntaxError:
-   msg = "Syntax error: The value should be int/float or an operator \n\
-              between int/float. For eg 22+33 or 22-11."
-   print(msg)
-   exit(1)
-except ZeroDivisionError:
-   print("ZeroDivisionError: Can't divide by 0")
-   exit(1)
+args.sp = validate_and_eval(args.sp)
+
 # Selling price can't be < 0 unless -p is specified
 if args.sp < 0 and not args.dispct:
    print("Selling price cannot be less than 0")
