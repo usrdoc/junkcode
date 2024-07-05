@@ -48,6 +48,8 @@ parser.add_argument("-a", "--amt", help="Amount invested")
 parser.add_argument("-p", "--dispct", help="Percent amount", type=float)
 parser.add_argument("-d", "--detail", help="Print all details",
                     action='store_true')
+parser.add_argument("-t", "--tag", help="Tag, placeholder for reverse "\
+                    "search")
 args = parser.parse_args()
 
 # The colors/symbols we need
