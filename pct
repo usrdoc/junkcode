@@ -46,8 +46,6 @@ parser.add_argument("sp", help="Selling price (If -p is provided then "\
 parser.add_argument("-c", "--cnt", help="Number of shares")
 parser.add_argument("-a", "--amt", help="Amount invested")
 parser.add_argument("-p", "--dispct", help="Percent amount", type=float)
-parser.add_argument("-d", "--detail", help="Print all details",
-                    action='store_true')
 parser.add_argument("-t", "--tag", help="Tag, placeholder for reverse "\
                     "search")
 args = parser.parse_args()
@@ -90,8 +88,6 @@ if args.sp >= 0:
 
 # if invoked from display_percent, the args.sp will be -1.
 def display_vanilla(sp):
-   if args.detail and not args.dispct:
-      print("Warning: The option -d is compatible only with -p")
    total_sp = round(sp * units)
    pct   = (total_sp/invst) - 1
    ruval = pct * invst
@@ -120,15 +116,10 @@ def display_percent():
    else:
       colour = sym.RED
 
+   args.sp = round(args.bp + (args.bp*(perct/100)), 2)
    sellp = round(args.bp + ((args.bp/100) * perct), 2)
 
-   print ("Buy prc: "+ blu + bold + ru + str(args.bp) + cend)
-   print ("Sel prc: " + colour + bold + f"{ru}{sellp}" + cend)
-   print ("Percent: " + colour + bold + f"{perct}%" + cend)
-
-   if args.detail:
-      print("----------------")
-      display_vanilla(round(sellp, 2))
+   display_vanilla(round(sellp, 2))
    exit(0)
 
 if args.sp >=0:
