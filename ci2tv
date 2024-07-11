@@ -3,8 +3,13 @@
 # Read a chartink (https://chartink.com) generated file and convert it to
 # tradingview readable file.
 
+usage () {
+    echo "Usage: $0 FILE | [-n]|[-l][-h]"
+    exit 0
+}
+
 if [ $# -ne 1 ]; then
-    echo "Usage: $0 FILE|[-n]"
+    usage
     exit 1
 fi
 
@@ -19,9 +24,28 @@ print_next_scan () {
     exit 0
 }
 
-if [ "X$1" = "X-n" ]; then
-    print_next_scan
-fi
+print_last_scan () {
+    if [[ ! -f ~/.last_scan ]]; then
+        echo "File ~/.last_scan not found. Scan to create the file."
+    else
+        cat ~/.last_scan
+    fi
+    exit 0
+}
+
+while getopts "nlh" arg; do
+    case $arg in
+        n)
+            print_next_scan
+            ;;
+        l)
+            print_last_scan
+            ;;
+        h | *)
+            usage
+            ;;
+    esac
+done
 
 ci_file="$1"
 
