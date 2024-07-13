@@ -26,7 +26,7 @@ def validate_and_eval(data):
       # Strip commas, if any and evaluate
       data = eval(data.replace(",", ""))
       return (data)
-   except SyntaxError:
+   except (SyntaxError, AttributeError):
       msg = "Syntax error: The value should be int/float or an operator \n\
               between int/float. For eg 22+33 or 22-11."
       print(msg)
