@@ -101,7 +101,7 @@ def display_vanilla(sp):
           cend + "  " + "Sell Price: " + colour + bold +
           ru + str(args.sp) + cend)
    print ("................")
-   print ("Invst: "+ blu + bold + ru + str(invst) + cend)
+   print ("Invst: "+ blu + bold + ru + str(round(invst,2)) + cend)
    print ("SellP: "+ colour + bold + f"{ru}{total_sp}" + cend)
    print ("Gn/Lo: "+ colour + bold + ru + str(round(ruval,2)) + cend +
           " ["+ colour + ru + str(rdiff) + cend + "; " + colour +
