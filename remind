@@ -49,5 +49,8 @@ else
     usage
 fi
 
-echo "Sleeping ${seconds} seconds..."
-sleep $seconds && $PLAYER $MEDIA
+epoch=`date +%s`
+wakeup=$((epoch+seconds))
+echo "`date +%H:%M:%S` --- Sleeping ${seconds} seconds ---"
+echo "`date --date=@$wakeup +%H:%M:%S` --- Wakeup --- "
+sleep $seconds && $PLAYER $MEDIA > /dev/null 2>&1
