@@ -50,7 +50,8 @@ else
 fi
 
 epoch=`date +%s`
+seconds=`echo $seconds | sed "s/\..*//"`
 wakeup=$((epoch+seconds))
 echo "`date +%H:%M:%S` --- Sleeping ${seconds} seconds ---"
 echo "`date --date=@$wakeup +%H:%M:%S` --- Wakeup --- "
-sleep $seconds && $PLAYER $MEDIA > /dev/null 2>&1
+sleep $DURATION && $PLAYER $MEDIA > /dev/null 2>&1
