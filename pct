@@ -71,7 +71,8 @@ elif args.cnt:
     units = validate_and_eval(args.cnt)
     invst = (units * args.bp)
 else:
-    units = invst/args.bp
+    units = floor(invst/args.bp)
+    invst = units * args.bp
 
 args.sp = validate_and_eval(args.sp)
 
